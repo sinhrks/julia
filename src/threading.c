@@ -375,7 +375,6 @@ DLLEXPORT jl_value_t *jl_threading_run(jl_function_t *f, jl_svec_t *args)
     jl_function_t *fun = NULL;
     if ((jl_value_t*)args == jl_emptytuple)
         args = jl_emptysvec;
-    JL_TYPECHK(jl_threading_run, function, (jl_value_t*)f);
     JL_TYPECHK(jl_threading_run, simplevector, (jl_value_t*)args);
 
     JL_GC_PUSH2(&argtypes, &fun);
@@ -488,7 +487,6 @@ DLLEXPORT jl_value_t *jl_threading_run(jl_function_t *f, jl_svec_t *args)
 {
     if ((jl_value_t*)args == jl_emptytuple)
         args = jl_emptysvec;
-    JL_TYPECHK(jl_threading_run, function, (jl_value_t*)f);
     JL_TYPECHK(jl_threading_run, simplevector, (jl_value_t*)args);
     return ti_run_fun(f, args);
 }
