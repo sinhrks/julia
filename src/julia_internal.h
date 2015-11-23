@@ -131,6 +131,7 @@ jl_lambda_info_t *jl_method_cache_insert(jl_methtable_t *mt, jl_tupletype_t *typ
 jl_methlist_t *jl_method_table_insert(jl_methtable_t *mt, jl_tupletype_t *type,
                                       jl_lambda_info_t *method, jl_svec_t *tvars,
                                       int8_t isstaged);
+jl_value_t *jl_first_argument_datatype(jl_value_t *argtypes);
 
 void jl_set_datatype_super(jl_datatype_t *tt, jl_value_t *super);
 void jl_add_constructors(jl_datatype_t *t);
