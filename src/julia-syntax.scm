@@ -385,11 +385,8 @@
          (keyword-sparam-names
           (map (lambda (s) (if (symbol? s) s (cadr s))) keyword-sparams)))
     (let ((kw (gensy)) (i (gensy)) (ii (gensy)) (elt (gensy)) (rkw (gensy))
-          (mangled (symbol (string "__"
-                                   (undot-name name)
-                                   "#"
-                                   (string.sub (string (gensym)) 1)
-                                   "__")))
+          (mangled (symbol (string "#" (undot-name name) "#"
+				   (string (current-julia-module-counter)))))
           (flags (map (lambda (x) (gensy)) vals)))
       `(block
         ;; call with no keyword args
@@ -938,7 +935,9 @@
          (let ((argl (if (and (pair? a) (eq? (car a) 'tuple))
 			 (cdr a)
 			 (list a)))
-	       (name (gensym)))
+	       ;; TODO: always use a specific special name like #anon# or _, then ignore
+	       ;; this as a local variable name.
+	       (name (symbol (string "#" (current-julia-module-counter)))))
            (expand-binding-forms
 	    `(function (call ,name ,@argl) ,body)))))
 
@@ -2750,9 +2749,9 @@ So far only the second case can actually occur.
  4. Staged functions containing closures are probably not lowered correctly
  (jl_instantiate_staged).
 
- 5. too many gensyms; maybe move generated toplevel definitions to
- a __hidden__ submodule. moreover, references in __hidden__ can be consideered
- weak. if __hidden__ has the only reference to a type, it can be removed.
+ 5. too many gensyms
+ idea: record the max module->counter after lowering is complete. anything higher than
+ this might be nondeterministic, and needs to be serialized in full.
 
 
  6. nice deprecation for `call` overloading
@@ -3012,11 +3011,11 @@ other:
                                     `(quote
                                       ,(to-goto-form
                                         (renumber-jlgensym
-                                         (convert-lambda lam2 '__anon__ #f #t)))))
+                                         (convert-lambda lam2 '|#anon| #f #t)))))
                                   ,(last e)))))
                  ;; local case - lift to a new type at top level
                  (let* ((exists (get namemap name #f))
-                        (tname  (or exists (named-gensy name)))
+                        (tname  (or exists (symbol (string "#" name "#" (current-julia-module-counter)))))
                         (cvs   (delete-duplicates
                                 (apply append
                                        ;; merge captured vars from all definitions

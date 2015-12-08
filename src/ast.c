@@ -60,6 +60,11 @@ value_t fl_current_julia_module(value_t *args, uint32_t nargs)
     return opaque;
 }
 
+value_t fl_current_module_counter(value_t *args, uint32_t nargs)
+{
+    return fixnum(jl_module_next_counter(jl_current_module));
+}
+
 value_t fl_invoke_julia_macro(value_t *args, uint32_t nargs)
 {
     if (nargs < 1)
@@ -116,6 +121,7 @@ static builtinspec_t julia_flisp_ast_ext[] = {
     { "defined-julia-global", fl_defined_julia_global },
     { "invoke-julia-macro", fl_invoke_julia_macro },
     { "current-julia-module", fl_current_julia_module },
+    { "current-julia-module-counter", fl_current_module_counter },
     { NULL, NULL }
 };
 
