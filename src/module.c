@@ -29,6 +29,7 @@ jl_module_t *jl_new_module(jl_sym_t *name)
     m->istopmod = 0;
     m->std_imports = 0;
     m->uuid = uv_now(uv_default_loop());
+    m->counter = 0;
     htable_new(&m->bindings, 0);
     arraylist_new(&m->usings, 0);
     if (jl_core_module) {
@@ -39,6 +40,11 @@ jl_module_t *jl_new_module(jl_sym_t *name)
     jl_module_export(m, name);
     JL_GC_POP();
     return m;
+}
+
+uint32_t jl_module_next_counter(jl_module_t *m)
+{
+    return ++(m->counter);
 }
 
 DLLEXPORT jl_value_t *jl_f_new_module(jl_sym_t *name, uint8_t std_imports)

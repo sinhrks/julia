@@ -1985,17 +1985,30 @@ void print_func_loc(JL_STREAM *s, jl_lambda_info_t *li)
     }
 }
 
-DLLEXPORT jl_function_t *jl_new_generic_function(jl_sym_t *name, jl_module_t *module)
+DLLEXPORT jl_function_t *jl_new_generic_function_with_supertype(jl_sym_t *name, jl_module_t *module, jl_datatype_t *st)
 {
-    jl_datatype_t *ftype = jl_new_datatype(name, jl_function_type, jl_emptysvec,
-                                           jl_emptysvec, jl_emptysvec, 0, 0, 0);
+    // type name is function name prefixed with #
+    size_t l = strlen(jl_symbol_name(name));
+    char *prefixed = (char*)malloc(l+2);
+    prefixed[0] = '#';
+    strcpy(&prefixed[1], jl_symbol_name(name));
+    jl_sym_t *tname = jl_symbol(prefixed);
+    free(prefixed);
+    jl_datatype_t *ftype = jl_new_datatype(tname, st, jl_emptysvec, jl_emptysvec, jl_emptysvec, 0, 0, 0);
     JL_GC_PUSH1(&ftype);
+    ftype->name->mt->name = name;
     ftype->name->module = module;
     ftype->name->mt->module = module;
+    jl_set_const(module, tname, (jl_value_t*)ftype);
     jl_value_t *f = jl_new_struct(ftype);
     ftype->instance = f; jl_gc_wb(ftype, f);
     JL_GC_POP();
     return (jl_function_t*)f;
+}
+
+DLLEXPORT jl_function_t *jl_new_generic_function(jl_sym_t *name, jl_module_t *module)
+{
+    return jl_new_generic_function_with_supertype(name, module, jl_function_type);
 }
 
 void jl_add_method_to_table(jl_methtable_t *mt, jl_tupletype_t *types, jl_lambda_info_t *meth,

@@ -384,6 +384,7 @@ typedef struct _jl_module_t {
     uint8_t istopmod;
     uint8_t std_imports;  // only for temporarily deprecating `importall Base.Operators`
     uint64_t uuid;
+    uint32_t counter;
 } jl_module_t;
 
 typedef struct _jl_methlist_t {
@@ -1036,6 +1037,7 @@ DLLEXPORT jl_sym_t *jl_tagged_gensym(const char *str, int32_t len);
 DLLEXPORT jl_sym_t *jl_get_root_symbol(void);
 jl_expr_t *jl_exprn(jl_sym_t *head, size_t n);
 DLLEXPORT jl_function_t *jl_new_generic_function(jl_sym_t *name, jl_module_t *module);
+DLLEXPORT jl_function_t *jl_new_generic_function_with_supertype(jl_sym_t *name, jl_module_t *module, jl_datatype_t *st);
 void jl_add_method(jl_function_t *gf, jl_tupletype_t *types, jl_lambda_info_t *meth,
                    jl_svec_t *tvars, int8_t isstaged);
 void jl_add_method_to_table(jl_methtable_t *mt, jl_tupletype_t *types, jl_lambda_info_t *meth,
