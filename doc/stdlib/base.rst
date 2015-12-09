@@ -419,7 +419,7 @@ All Objects
 Types
 -----
 
-.. function:: super(T::DataType)
+.. function:: supertype(T::DataType)
 
    .. Docstring generated from Julia source
 

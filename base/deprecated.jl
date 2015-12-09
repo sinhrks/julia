@@ -902,3 +902,6 @@ function isexecutable(st::Filesystem.StatStruct)
     return (st.mode & 0o111) > 0
 end
 export isreadable, iswritable, isexecutable
+
+#14335
+@deprecate super(T::DataType) supertype(T)

@@ -7702,11 +7702,11 @@ The inverse of `ind2sub`, returns the linear index corresponding to the provided
 sub2ind
 
 doc"""
-    super(T::DataType)
+    supertype(T::DataType)
 
 Return the supertype of DataType `T`.
 """
-super
+supertype
 
 doc"""
     readline(stream=STDIN)
