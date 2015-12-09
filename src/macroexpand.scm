@@ -260,9 +260,11 @@
 			 (expr-find-all (lambda (v)
 					  (and (symbol? v) (or (memq v lvars)
 							       (assq v env))))
-					expr identity))))
-		`(call (-> (tuple ,@vs) ,(resolve-expansion-vars- expr env m inarg))
-		       ,@vs)
+					expr identity)))
+                    (e2 (resolve-expansion-vars- expr env m inarg)))
+                (if (null? vs)
+                    e2
+                    `(call (-> (tuple ,@vs) ,e2) ,@vs))
 		#;(resolve-expansion-vars- (if (null? vs)
 					     expr
 					     `(call (-> (tuple ,@vs) ,expr)

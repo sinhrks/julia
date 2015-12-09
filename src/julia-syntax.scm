@@ -2751,8 +2751,13 @@ So far only the second case can actually occur.
  (jl_instantiate_staged).
 
  5. too many gensyms; maybe move generated toplevel definitions to
- a __hidden__ submodule. moreover, references in __hidden__ can be consideered
+ a __hidden__ submodule. moreover, references in __hidden__ can be considered
  weak. if __hidden__ has the only reference to a type, it can be removed.
+ - names must have the property that if the same module is loaded on multiple
+   processors, corresponding closures have the same name.
+ - anything of the form `f(x)=...` or `function f(x)` has "display name" `f`,
+   with `->` the display name is `anonymous`. display name goes in AST source
+   location metadata, and in linfo->name.
 
 
  6. nice deprecation for `call` overloading
@@ -2766,6 +2771,7 @@ So far only the second case can actually occur.
  signatures can depend on them.
 
  10. decide if/how to present extra function argument when printing things
+
 
  11. better ctor syntax
 
