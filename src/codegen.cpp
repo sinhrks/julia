@@ -1298,20 +1298,19 @@ extern "C" DLLEXPORT
 void *jl_get_llvmf(jl_function_t *f, jl_tupletype_t *tt, bool getwrapper)
 {
     jl_lambda_info_t *sf=NULL;
+    JL_GC_PUSH2(&sf, &tt);
     if (tt != NULL)
         sf = jl_get_specialization(f, tt);
     if (sf == NULL) {
-        // TOOD jb/functions
-        return NULL;
-        /*
+        tt = jl_argtype_with_function(f, tt);
         sf = jl_method_lookup_by_type(jl_gf_mtable(f), tt, 0, 0);
-        if (sf == NULL)
+        if (sf == NULL) {
+            JL_GC_POP();
             return NULL;
+        }
         jl_printf(JL_STDERR,
                   "WARNING: Returned code may not match what actually runs.\n");
-        */
     }
-    JL_GC_PUSH1(&sf);
     if (sf->specFunctionObject != NULL) {
         // found in the system image: force a recompile
         Function *llvmf = (Function*)sf->specFunctionObject;

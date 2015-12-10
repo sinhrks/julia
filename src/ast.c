@@ -62,7 +62,11 @@ value_t fl_current_julia_module(value_t *args, uint32_t nargs)
 
 value_t fl_current_module_counter(value_t *args, uint32_t nargs)
 {
-    return fixnum(jl_module_next_counter(jl_current_module));
+    static uint32_t fallback_counter = 0;
+    if (jl_current_module == NULL)
+        return fixnum(++fallback_counter);
+    else
+        return fixnum(jl_module_next_counter(jl_current_module));
 }
 
 value_t fl_invoke_julia_macro(value_t *args, uint32_t nargs)

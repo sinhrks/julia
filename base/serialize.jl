@@ -638,10 +638,7 @@ function deserialize_datatype(s::SerializationState)
         mod = deserialize(s)::Module
         ty = getfield(mod,name)
     end
-    if !isa(ty,DataType)
-        # mod.name is bound to instance instead. this happens for toplevel generic functions.
-        ty = typeof(ty).name.primary
-    end
+    assert(isa(ty,DataType))
     if isempty(ty.parameters)
         t = ty
     else

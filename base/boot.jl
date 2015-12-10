@@ -274,6 +274,7 @@ function kwftype(t::ANY)
     mt = t.name.mt
     if isdefined(mt, :kwsorter)
     else
+        # TODO jb/functions decide naming convention for these
         mt.kwsorter = ccall(:jl_new_generic_function, Any, (Any, Any), t.name.name, mt.module)
     end
     typeof(mt.kwsorter)
