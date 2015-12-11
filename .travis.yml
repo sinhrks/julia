@@ -46,7 +46,7 @@ before_install:
     - make check-whitespace
     - if [ `uname` = "Linux" ]; then
         contrib/travis_fastfail.sh || exit 1;
-        BUILDOPTS="-j3 VERBOSE=1 FORCE_ASSERTIONS=1";
+        BUILDOPTS="VERBOSE=1 FORCE_ASSERTIONS=1";
       elif [ `uname` = "Darwin" ]; then
         brew update;
         brew install -v jq bar;
