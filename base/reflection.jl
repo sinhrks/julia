@@ -174,7 +174,16 @@ function _methods(t::Array,i,lim::Integer,matching::Array{Any,1})
     matching
 end
 
-methods(f::ANY) = typeof(f).name.mt
+function methods(f::ANY)
+    ft = typeof(f)
+    if ft <: Type || !isempty(ft.parameters)
+        # for these types of `f`, not every method in the table will necessarily
+        # match, so we need to filter based on its type.
+        methods(f, Tuple{Vararg{Any}})
+    else
+        ft.name.mt
+    end
+end
 
 function length(mt::MethodTable)
     n = 0

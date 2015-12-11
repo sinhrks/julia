@@ -385,7 +385,7 @@
          (keyword-sparam-names
           (map (lambda (s) (if (symbol? s) s (cadr s))) keyword-sparams)))
     (let ((kw (gensy)) (i (gensy)) (ii (gensy)) (elt (gensy)) (rkw (gensy))
-          (mangled (symbol (string "#" (undot-name name) "#"
+          (mangled (symbol (string "#" (if name (undot-name name) 'call) "#"
 				   (string (current-julia-module-counter)))))
           (flags (map (lambda (x) (gensy)) vals)))
       `(block
@@ -2741,15 +2741,15 @@ So far only the second case can actually occur.
 #|
  1. Figure out how to pass in static parameters in --compile=no mode, fix --compile=all.
 
- 2. repair precompilation
+*2. repair precompilation
 
- 3. Figure out closure serialization. maybe only fully serialize types from
+*3. Figure out closure serialization. maybe only fully serialize types from
  Main.__hidden__
 
  4. Staged functions containing closures are probably not lowered correctly
  (jl_instantiate_staged).
 
- 5. too many gensyms
+*5. too many gensyms
  - names must have the property that if the same module is loaded on multiple
    processors, corresponding closures have the same name.
  - anything of the form `f(x)=...` or `function f(x)` has "display name" `f`,
@@ -2785,7 +2785,7 @@ So far only the second case can actually occur.
  16. is there a more efficient way to have huge #s of types with only default constructors?
 
 other:
-- methods(ASCIIString) shows entire Type methods list; should restrict to ASCIIString
+* methods(ASCIIString) shows entire Type methods list; should restrict to ASCIIString
 |#
 
 (define (vinfo:not-capt vi)
@@ -2794,7 +2794,7 @@ other:
 (define (clear-capture-bits vinfos)
   (map vinfo:not-capt vinfos))
 
-(define (convert-lambda lam fname tname interp)
+(define (convert-lambda lam fname interp)
   `(lambda ,(lam:args lam)
      (,(clear-capture-bits (car (lam:vinfo lam)))
       ()
@@ -3017,11 +3017,13 @@ other:
                                     `(quote
                                       ,(to-goto-form
                                         (renumber-jlgensym
-                                         (convert-lambda lam2 '|#anon| #f #t)))))
+                                         (convert-lambda lam2 '|#anon| #t)))))
                                   ,(last e)))))
                  ;; local case - lift to a new type at top level
                  (let* ((exists (get namemap name #f))
-                        (tname  (or exists (symbol (string "#" name "#" (current-julia-module-counter)))))
+                        (tname  (or exists
+                                    (and name
+                                         (symbol (string "#" name "#" (current-julia-module-counter))))))
                         (cvs   (delete-duplicates
                                 (apply append
                                        ;; merge captured vars from all definitions
@@ -3069,7 +3071,7 @@ other:
                                                       (if iskw
                                                           (caddr (lam:args lam2))
                                                           (car (lam:args lam2)))
-                                                      tname #f)
+                                                      #f)
                                      ,(last e))))
                      ,(if exists
                           '(null)

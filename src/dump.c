@@ -920,10 +920,9 @@ static void jl_serialize_lambdas_from_mod(ios_t *s, jl_module_t *m)
         if (table[i] != HT_NOTFOUND) {
             jl_binding_t *b = (jl_binding_t*)table[i];
             if (b->owner == m && b->value && b->constp) {
-                // TODO jb/functions
                 if (jl_is_datatype(b->value)) {
                     jl_methtable_t *mt = ((jl_datatype_t*)b->value)->name->mt;
-                    if (mt->name == b->name && mt->module == m) {
+                    if (((jl_datatype_t*)b->value)->name->name == b->name && mt->module == m) {
                         jl_serialize_methtable_from_mod(s, mt, 0);
                         jl_serialize_methtable_from_mod(s, mt, 1);
                     }
