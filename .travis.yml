@@ -5,7 +5,7 @@ matrix:
   include:
     - os: linux
       env: ARCH="i686"
-      compiler: "gcc -m32"
+      compiler: "g++ -m32"
       addons:
         apt:
           packages:
@@ -19,7 +19,7 @@ matrix:
             - gfortran:i386
     - os: linux
       env: ARCH="x86_64"
-      compiler: "gcc -m64"
+      compiler: "g++ -m64"
       addons:
         apt:
           packages:
@@ -46,7 +46,7 @@ before_install:
     - make check-whitespace
     - if [ `uname` = "Linux" ]; then
         contrib/travis_fastfail.sh || exit 1;
-        BUILDOPTS="-j3 VERBOSE=1 FORCE_ASSERTIONS=1 LLVM_VER=3.8.0";
+        BUILDOPTS="-j3 VERBOSE=1 FORCE_ASSERTIONS=1 LLVM_VER=3.7.1";
       elif [ `uname` = "Darwin" ]; then
         brew update;
         brew install -v jq bar;
