@@ -46,7 +46,7 @@ before_install:
     - make check-whitespace
     - if [ `uname` = "Linux" ]; then
         contrib/travis_fastfail.sh || exit 1;
-        BUILDOPTS="VERBOSE=1 FORCE_ASSERTIONS=1";
+        BUILDOPTS="-j3 VERBOSE=1 FORCE_ASSERTIONS=1 LLVM_VER=3.8.0";
       elif [ `uname` = "Darwin" ]; then
         brew update;
         brew install -v jq bar;
@@ -66,7 +66,6 @@ before_install:
     - git clone -q git://git.kitenet.net/moreutils
 script:
     - make $BUILDOPTS -C base version_git.jl.phony
-    - make $BUILDOPTS NO_GIT=1 -C deps distclean-llvm
     - make $BUILDOPTS NO_GIT=1 -C deps | bar > deps.log || cat deps.log
     - make $BUILDOPTS NO_GIT=1 JULIA_SYSIMG_BUILD_FLAGS="--output-ji ../usr/lib/julia/sys.ji" prefix=/tmp/julia install | moreutils/ts -s "%.s"
     - if [ `uname` = "Darwin" ]; then
