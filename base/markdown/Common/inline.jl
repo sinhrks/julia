@@ -39,8 +39,8 @@ end
 # ––––––––––––––
 
 type Image
-    url::UTF8String
-    alt::UTF8String
+    url::String
+    alt::String
 end
 
 @trigger '!' ->
@@ -59,7 +59,7 @@ end
 
 type Link
     text
-    url::UTF8String
+    url::String
 end
 
 @trigger '[' ->

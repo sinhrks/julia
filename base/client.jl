@@ -3,7 +3,7 @@
 ## client.jl - frontend handling command line options, environment setup,
 ##             and REPL
 
-const ARGS = UTF8String[]
+const ARGS = String[]
 
 const text_colors = AnyDict(
     :black   => "\033[1m\033[30m",
@@ -141,7 +141,7 @@ function syntax_deprecation_warnings(f::Function, warn::Bool)
     end
 end
 
-function parse_input_line(s::ByteString)
+function parse_input_line(s::String)
     # (expr, pos) = parse(s, 1)
     # (ex, pos) = ccall(:jl_parse_string, Any,
     #                   (Ptr{UInt8},Csize_t,Int32,Int32),
@@ -209,7 +209,7 @@ function init_bind_addr()
     LPROC.bind_port = UInt16(bind_port)
 end
 
-function process_options(opts::JLOptions, args::Vector{UTF8String})
+function process_options(opts::JLOptions, args::Vector{String})
     if !isempty(args)
         arg = first(args)
         idxs = find(x -> x == "--", args)
@@ -287,8 +287,8 @@ const roottask = current_task()
 is_interactive = false
 isinteractive() = (is_interactive::Bool)
 
-const LOAD_PATH = ByteString[]
-const LOAD_CACHE_PATH = ByteString[]
+const LOAD_PATH = String[]
+const LOAD_CACHE_PATH = String[]
 function init_load_path()
     vers = "v$(VERSION.major).$(VERSION.minor)"
     if haskey(ENV,"JULIA_LOAD_PATH")

@@ -138,7 +138,7 @@ end
 
 # issue #1821
 let
-    d = Dict{UTF8String, Vector{Int}}()
+    d = Dict{String, Vector{Int}}()
     d["a"] = [1, 2]
     @test_throws MethodError d["b"] = 1
     @test isa(repr(d), AbstractString)  # check that printable without error
@@ -310,7 +310,7 @@ end
 let
     a = Dict("foo"  => 0.0, "bar" => 42.0)
     b = Dict("フー" => 17, "バー" => 4711)
-    @test is(typeof(merge(a, b)), Dict{UTF8String,Float64})
+    @test is(typeof(merge(a, b)), Dict{String,Float64})
 end
 
 # issue 9295
